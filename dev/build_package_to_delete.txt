@@ -1,0 +1,85 @@
+#code to run R package
+#namespace to import export
+#example for each methods
+#feng's directory
+#run this on every startup of the R console
+
+projectPath<-"/home/feng/Feng/hg/frLib"
+holderPath<-"/home/feng/Feng/hg"
+
+setwd( "/home/feng/Feng/hg/frLib")
+
+#Optional, if we want to have the github project for synchronizing different 
+#version, 
+#   1)first create github empty project
+#   2)clone into the local machine
+#   3)start R package using usethis::create_package() see below
+
+#libraries
+install.packages("devtools")
+install.packages("roxygen2")
+install.packages("usethis")
+    #developer version
+    devtools::install_github("r-lib/usethis")
+    devtools::install_github("hadley/devtools")
+    devtools::install_github("klutometis/roxygen")
+
+#to create new R package, at the parent folder with new folder created using the name fields
+    setwd("/home/feng/Feng/hg")
+    usethis::create_package("frLib")
+    
+    #same thing as skeleton, but use the current folder, and assume the package name as the current folder name
+    #be careful here, not tested currently (5/19/2019)
+    setwd( "/home/feng/Feng/hg/frLib")
+    devtools::setup(path=".")				 
+
+
+#call roxygen2 to process the helper pages from the roxygen comments
+setwd("/home/feng/Feng/hg/frLib")
+devtools::document()
+
+#remove
+remove.packages("frLib")
+
+#feng's directory to call to install
+setwd("/home/feng/Feng/hg/")
+#install from local directory, but this is different from install.packages
+devtools::install("frLib")
+
+#install from local using install.packages utility
+setwd("/home/feng/Feng/hg/")
+install.packages(c("frLib"),repos=NULL, type="source")
+
+#load the package
+library(PAST)
+
+
+################leftover
+#update the text data
+dataPath<-"h:\\feng\\LAB\\MSI\\AbSynthesis\\proteinArray\\Run2015_10_08"
+rawDataPath<-paste(projectPath,"/inst/extdata",sep="")
+
+#this below one finds the exact incidence of "Analysis of 1153-PMT650.txt"
+#with format like "Analysis [word] [word]-[word].txt", the length of word fixed
+#actually [word] could only be zero or nonzero length, more like to show once or zero times
+filelst<-list.files(dataPath,"^Analysis\\s\\w*\\s\\w*-\\w*.txt$", full.names=TRUE)
+
+#this one below finds "Analysis( [word1]){n}-[word2].txt" word1 could be zero or more 
+#times, that word including the leading space could be zero or many times.
+#word2 could be zero or more length, meaning 1 or zero times. It doesn't include space
+filelst<-list.files(dataPath,"^Analysis(\\s\\w*)*-\\w*.txt$", full.names=TRUE)
+
+#compared with above, the space could be there or not. almost identical.
+ filelst<-list.files(dataPath,"^Analysis(\\s*\\w*)*-\\w*.txt$", full.names=TRUE)
+ 
+ #could be many words with hypen, above there will only be exactly one hyphen
+filelst<-list.files(dataPath,"^Analysis(\\s*\\w*-*\\w*)*-\\w*.txt$", full.names=TRUE)
+
+#could be many words with hypen,and could be many hypens in a run. also can no hypen 
+#connected words
+filelst<-list.files(dataPath,"^Analysis(\\s*\\w*-*\\w*)*.txt$", full.names=TRUE)
+
+file.copy(filelst, rawDataPath)
+#call to show the man page of the class.
+?APPPA
+
