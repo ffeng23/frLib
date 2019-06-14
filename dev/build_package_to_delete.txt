@@ -35,14 +35,16 @@ install.packages("usethis")
 
 
 #call roxygen2 to process the helper pages from the roxygen comments
-setwd("/home/feng/Feng/hg/frLib")
+#setwd("/home/feng/Feng/hg/frLib")
+setwd("E:/feng/LAB/hg/frLib")
 devtools::document()
 
 #remove
 remove.packages("frLib")
 
 #feng's directory to call to install
-setwd("/home/feng/Feng/hg/")
+#setwd("/home/feng/Feng/hg/")
+setwd("E:/feng/LAB/hg")
 #install from local directory, but this is different from install.packages
 devtools::install("frLib")
 
