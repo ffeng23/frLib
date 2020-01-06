@@ -2,13 +2,14 @@ Package: frLib
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Feng",
+           family = "Feng",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "ffeng@bu.edu",
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: What the package does (one paragraph).
+Depends: R (>= 3.5.0)
 License: What license it uses
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.1.9000
+RoxygenNote: 7.0.2
