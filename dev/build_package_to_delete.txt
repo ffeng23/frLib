@@ -35,8 +35,8 @@ install.packages("usethis")
 
 
 #call roxygen2 to process the helper pages from the roxygen comments
-setwd("/home/feng/Feng/hg/frLib")
-#setwd("E:/feng/LAB/hg/frLib")
+#setwd("/home/feng/Feng/hg/frLib")
+setwd("E:/feng/LAB/hg/frLib")
 devtools::document()
 
 #remove
