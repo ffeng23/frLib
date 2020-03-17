@@ -107,4 +107,29 @@
 			return(ret);
 		} #end of 
 
-	 
+#'@title accumulate sum 
+#'@description obtaining the accumulate sum of a vector
+#'@param x vector of numbers
+#'@return a numeric sum
+#'@examples
+#'	x<-c(1:10)
+#' accumulateSum(x)
+#'@export 
+
+###function definition
+###used to obtain the accumulative sum of a col or row.
+###input assuming a vector only
+accumulateSum<-function(x)
+{
+	y<-x;
+	if(length(x)<2)
+	{
+		return (y)
+	}
+	
+	for(i in 2:length(x))
+	{
+		y[i]<-y[i]+y[i-1]
+	}
+	return(y);
+}
