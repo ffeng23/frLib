@@ -3,7 +3,7 @@
 #data.R module.
 
 #NOTE: how to save an R data object?
-#	#save the data object 
+#	#save the data object at the R package module directory
 #	usethis::use_data(data_name1, data_name2,...)
 #	#then log the data object in the data.R file.
 
