@@ -51,6 +51,9 @@
 #'@title obtain the gene lengths from gtf file
 #'@description calculate the gene lengths based on the information in the gtf files.
 #'@details  (to be added)
+#'@param gff.file file path to the gtf or gff file
+#'@param format string to indicate what type it is for the gff.file above.
+#'@param genome string indicate what genome version the gtf/gff is using. 
 #'@return an integer vector holding the gene length. 
 #'@examples
 #'#DON'T RUN
@@ -106,7 +109,7 @@ getGeneLengthGff<-function( gff.file,format="gtf", genome="GRCm38.71"
 #'@return Gene length data
 #'@examples 
 #' qfile<-system.file("extdata", package="frLib")
-#' qfile<-file.path(qfile, "quant.sf")
+#' qfile<-file.path(qfile, "quant_truncated.sf")  # quant.sf was truncated for demonstration purpose
 #' #GTFfile<-"/home/feng/Windows/D/feng/LAB/MSI/mouse_genome_MM9/Homo_sapiens.GRCh38.91.gtf"
 #'# format="gtf"
 #' #tx2gene	= getTx2Gene(GTFfile, format=format);
@@ -116,7 +119,7 @@ getGeneLengthGff<-function( gff.file,format="gtf", genome="GRCm38.71"
 getGeneLengthSalmon<-function( file, tx2gene
     )
 {
-	tx.salmon <- tximport(file, type = "salmon", tx2gene = tx2gene, 
+	tx.salmon <- tximport(file, type = "salmon" , tx2gene = tx2gene, 
                       #reader = read_tsv, 
 					  countsFromAbundance = "no")
 					  
@@ -127,10 +130,20 @@ getGeneLengthSalmon<-function( file, tx2gene
 #'@import GenomicFeatures
 
 #'@import readr 
-
+#'@title make transcript to gene file
+#'@description on the basis of a gff.file make a transcript to gene text file. This will be used by tximport or other 
+#'	facility to generate gene based read counts.
+#'@param gff.file gtf/gff file path
+#'@param format string to indicate the file type 
+#'@examples
+#' qfile<-system.file("extdata", package="frLib")
+#' qfile<-file.path(qfile, "quant_truncated.sf")
+#' #DON"T RUN unless the file path is valid 
+#' #GTFfile<-"/home/feng/Windows/D/feng/LAB/MSI/mouse_genome_MM9/Homo_sapiens.GRCh38.91.gtf"
+#'# format="gtf"
+#' #tx2gene	= getTx2Gene(GTFfile, format=format);
 #'@export
 getTx2Gene<-function ( gff.file, format="gtf"
-
 		)
 {
 	cat("** **Reading input file and making transcript database........\n"); flush.console();
@@ -154,6 +167,7 @@ getTx2Gene<-function ( gff.file, format="gtf"
 	cat("\t........Done\n");
 	#============above code used to build the tx2gene file. and also very weird, it seems we need to build and then save 
 	#		and then read it. otherwise the tximport will run into errors??????
+	#---updated 2020, we have fixed the problem. don't remember how, but it is related to the data.frame type, etc.
 
 	#file.dir<-"E:\\feng\\LAB\\MSI\\singleCellRNASeq\\20170203_plateI_SCRS01\\salmon"
 	#file.dir<-"/home/feng/Windows/D/feng/LAB/MSI/singleCellRNASeq/20170203_plateI_SCRS01/salmon/"
@@ -193,10 +207,17 @@ showGeneLengths<-function(db.path=system.file("extdata", package="frLib")
 #'
 #'@examples
 #'#DON'T RUN
-#'####first add salmon calculated gene lengths 
+#'####first add salmon calculated gene lengths
+#' # 
 #'#GTFfile<-"/home/feng/Windows/D/feng/LAB/MSI/mouse_genome_MM9/Homo_sapiens.GRCh38.91.gtf"
 #'# format="gtf"
 #'#tx2gene	= getTx2Gene(GTFfile, format=format);
+#' qfile<-system.file("extdata", package="frLib")
+#' qfile<-file.path(qfile, "quant_truncated.sf")
+#'  #note: in this example we are reading the quant file in packed with quant 
+#'	#  the real code is PJ01 linux code "importSalmon_each_getLength.R"
+#'	#   in there either we read 12 or 9 quant_truncated files to generate the lengths and save to the package.
+#'  #   see the code there .
 #'#lens<-getGeneLengthSalmon(qfile, tx2gen=tx2gene);
 #'#db.path<-file.path("/home/feng/Feng/hg/frLib/inst/extdata/")
 #'#addGeneLengths(lns=lens, ver="GRCh38.91.salmon",db.path=db.path);

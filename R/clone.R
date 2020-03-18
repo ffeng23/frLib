@@ -20,9 +20,9 @@
 #'@return a data frame for the clone size distribution 
 #'@examples
 #' dir_file<-system.file("extdata", package="frLib")
-#' ca<-read.table(file.path(dir_file,"CloneAssignments.txt"), header=T,sep="\t")
+#' ca<-read.table(file.path(dir_file,"CloneAssignments.txt"), header=T,sep="\t") ; #note this CloneAssignments file has been truncated 
 #' print(ca);
-#'x<-generateCloneSizeBySampling(filename=file.path(dir_file,"CloneAssignments.txt"), size=2000, times=10, sample.name="sample13")
+#'x<-generateCloneSizeBySampling(filename=file.path(dir_file,"CloneAssignments.txt"), size=20, times=10, sample.name="sample13")
 #'@export
 #reading a file, named cloneAssignment, which is an output of 
 #clonyast. each row of the file is for one sequence. This row shows
