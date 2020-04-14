@@ -178,31 +178,41 @@ categorize_matrix<-function(dat, criteria, by,FUN)
 	return (re.dat);
 }
 
+
 #convert the numeric data frame or data matrix into groups/categories
 #'@title categorize the data on the basis of the input criteria
 #'@description We count the frequencies of a numeric data set based on the input category intervals 
-#'	. 
+#'	, or run other functions (FUN) on them. 
 #'@param dat the data frame that will be grouped. There is only on column of data we will categorize.
 #'@param criteria numeric vector describing the grouping criteria or the intervals. The grouping is done
 #'	in such way: 1)group less than the minimum value of criteria; 2) group larger than minimum one and 
 #'		less than 2nd smallest value; ..... n-1) group larger than 2nd largest value and less the largest
 #'		value; n) group with values larger than the maximum x value.
-#'@param index.data the index of the data column to be categorized
+#'@param index.data the index of the data column to be categorized based on
 #'@param index.group the index of the grouping variable.
-#'@param FUN string to indicate the function for summarize the data
+#'@param index.out the index of the data column used to run the function on. see example 
+#'@param FUN string to indicate the function for summarize the data, eg, mean, length, sum are supported
 #'@return a data matrix holding the newly categorized data and the grouping variable.
 #'@examples
 #'
 #create random data
 #'set.seed(0)
-
-#'dat<-data.frame(g1=runif(200, 0,1), g2=rep(c("group1","group2"),100 ))
+#'
+#'dat<-data.frame(g1=runif(200, 0,1), g2=rep(c("group1","group2"),100 ), count=sample(c(1:100),200, replace=T))
 #'criteria<-c(0.1, 0.5,0.7)
-
-#'cdat<-categorize_dataframe(dat, criteria,1,2, "length");
-
+#'#first do the case where the index.out is the same as the index.data, we are generate the criteria and output on
+#'#the same  column. 
+#'cdat<-categorize_dataframe(dat=dat, criteria=criteria,
+#'           	index.data=1,index.group=2, index.out=1, FUN="length"); 
+#'	#or we call the function by omitting the index.out , so it take the default.
+#'      #cdat<-categorize_dataframe(dat=data, criteria=criteria,
+#'        #   	index.data=1,index.group=2, FUN="length"); 
+#'
+#' #second case, calling to do the output and criteria on different columns
+#'cdat2<-categorize_dataframe(dat=dat, criteria=criteria,
+#'           	index.data=1,index.group=2, index.out=3, FUN="sum"); 
 #'@export 
-categorize_dataframe<-function(dat, criteria,index.data, index.group, FUN)
+categorize_dataframe<-function(dat, criteria,index.data, index.group, index.out=index.data, FUN)
 {
 	if(missing(dat))
 	{
@@ -222,7 +232,12 @@ categorize_dataframe<-function(dat, criteria,index.data, index.group, FUN)
 	{
 		stop("please specify the input index.group")
 	}
-
+	#if no index of the output data was specified, we will simply
+	#make the index.data as the output field.
+	if(missing(index.out))
+	{
+		index.out<-index.data;
+	}
 	if(length(criteria)<1)
 	{
 		stop("the input criteria variable is zero-lengthed!!")
@@ -236,24 +251,25 @@ categorize_dataframe<-function(dat, criteria,index.data, index.group, FUN)
 	re.dat<-data.frame(rep(0,(length(criteria)+1)*length(groupNames)),
 						rep(groupNames,each=(length(criteria)+1))
 						)
-	names(re.dat)<-names(dat)[c(index.data,index.group)]
+	names(re.dat)<-names(dat)[c(index.out,index.group)]
 	for(j in 1:length(groupNames))
 	{	
 			#for the first case
 		dat.group=dat[dat[,index.group]==groupNames[j],index.data]
+		out.group=dat[dat[,index.group]==groupNames[j],index.out]
 		index<-which(dat.group<=criteria[1]);
-		re.dat[1+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,dat.group[index]));#dat[index,j],2,sum)
+		re.dat[1+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,out.group[index]));#dat[index,j],2,sum)
 		if(length(criteria)>1)
 		{
-			#now, stop doing the job
+			#now, start doing the job
 			for(i in 2:length(criteria))
 			{
 				index<-which(dat.group>criteria[i-1]&dat.group<=criteria[i]);
-				re.dat[i+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,dat.group[index]));#(dat[index,j],2,sum)
+				re.dat[i+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,out.group[index]));#(dat[index,j],2,sum)
 			}
 		}
 		index<-which(dat.group>criteria[length(criteria)]);
-		re.dat[length(criteria)+1+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,dat.group[index]));#apply(dat[index,j],2,sum);
+		re.dat[length(criteria)+1+(length(criteria)+1)*(j-1),1]<-eval(call(FUN,out.group[index]));#apply(dat[index,j],2,sum);
 		
 	}
 	return (re.dat);
