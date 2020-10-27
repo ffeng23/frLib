@@ -32,13 +32,13 @@ stackTableData<-function( data, index=c(1:dim(data)[2]))
 		stop("index out of range. please check")
 	}
 	index.repeat<-setdiff(c(1:dim(data)[2]), index)
-	re<-data.frame(x=data[,index[1]])
+	re<-data.frame(x=data[,index[1]], vname=names(data)[index[1]])
 	#now start doing the reformatting.
 	if(length(index)>1)
 		{
 			for(i in 2:length(index))
 			{
-					re<-rbind(re, data.frame(x=data[,index[i]]))
+					re<-rbind(re, data.frame(x=data[,index[i]], vname=names(data)[index[i]]))
 			}
 		}
 	names(re)[1]=names(data)[index[1]]
@@ -49,6 +49,6 @@ stackTableData<-function( data, index=c(1:dim(data)[2]))
 		{
 			re<-cbind(re, rep(data[,index.repeat[j]], length(index)))
 		}
-		names(re)[-1]=names(data)[index.repeat]
+		names(re)[-c(1,2)]=names(data)[index.repeat]
 		return (re)
 }
