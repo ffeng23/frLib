@@ -823,7 +823,7 @@ COV_f <- function(i,j, x, ace){
       if (i == j){
         cov.f <- f(i, x)*(1 - f(i, x)/ace)
       } else {
-        cov.f <- -f(i, x)*f(j, x)/ace
+        cov.f <- -f(i, x)*(f(j, x)/ace)
       }     
       return(cov.f)
     }
