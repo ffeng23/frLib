@@ -168,6 +168,64 @@ extrapolation_Abu<-function(f, n, m,k=10)
     return (S_sample);
 }
 
+
+##-==========the following is for doing collection model estimation of 
+#'@title prepare input data for collection function modeling.
+#'@description prepare input based on clone CDR3 data, clones identity and CDR3 length
+#'                  check the ref Sobreon 1993 Accumulation function. 
+#'                  note in ref Greiff 2017 they are not correct in two things: # of unique clones as independent 
+#'                  variable and the log transformation of the independent variable.
+#'@param clones a list of samples clone ids, each of  which is made up of v gene, j gene and CDR3
+#'@param freqs a list of sample clone frequencies/abundances. This will be used to calculate 
+#'          # of sequences for each sample. 
+#'@param orders an array of indexes of the clones in the previous two variables.
+#'@examples 
+#'      # check the wl03R2/newPipeline/Repertoire_3_v1.0.r for an example.
+#'@return a list of two inputs for modelling: total number of sequences and # of clones 
+#'@export       
+collection_data<-function(clones, freqs, orders=c(1:length(clones))) 
+{
+    #cr<-rep(0, length(orders))
+    seq.num<-rep(0, length(orders))
+    uClones.num<-rep(0, length(orders))
+    uClones<-clones[[orders[1]]]
+    ifreqs<-freqs[[orders[1]]]
+    uClones.num[1]<-length(uClones)
+    seq.num[1]<-sum(ifreqs)
+    for(i in 2:length(orders))
+    {
+        seq.num[i]<-seq.num[i-1]+sum(freqs[[orders[i]]])
+            uClones<-union(uClones,clones[[orders[i]]])
+            uClones.num[i]<-length(uClones)
+    }
+    return (list(total=seq.num, unique=uClones.num));
+}
+#'@title run collection model fitting
+#'@description fit the collection model
+#'              ncs~ a(1-exp(-1*b*N))
+#'@param ncs input array as the number of clones in the sample
+#'@param N input array the number of total sequences in the sample
+#'@param a initial value of a 
+#'@param b intital value of b
+#'@return a nls fitting object
+#'@export 
+collection_runFit<-function(ncs, N, init_a=3.9E9, init_b=1.7e-10)
+{
+    nl<-nlsLM(ncs~a*(1-exp(-1*b*N)), start=list(a=init_a,b=init_b), control=nls.lm.control(maxiter = 100))
+    #m<-nls(cv~a*(1-exp(-1*b*N)), start=list(a=4e9,b=1.7e-10))
+    return (nl)
+}
+#'@title collection model_fn3 
+#'@description to calculate the expected clones based on # of samples
+#'@param a the asymptotic total number of clones in the repertoire
+#'@param b the slope for decreasing of detection probablity for a new clone.
+#'@return the expected clones
+#'@export
+#'
+model_fn3<-function (a, b, N)
+{
+    return (a*(1-exp(-1*b*N)))
+}
 #plot(getIndividuals(Q, T, 1:T),rarefection_Inc(Q, T, 1:T) )
 #plot(1:T,rarefection_Inc(Q, T, 1:T) )
 #t<-1:20000
