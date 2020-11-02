@@ -140,14 +140,15 @@ extrapolation_Inc<-function(Q, T, t,k=10)
 {
     Qm<-matrix(Q, nrow=length(Q)/2, ncol=2, byrow=T)
     Sobs<-sum(Qm[,2]);
-    Q0_hat<-as.numeric(Chao2(Q, T)[1]-Sobs)
+    #Q0_hat<-as.numeric(Chao2(Q, T)[1]-Sobs)
+    Q0_hat<-as.numeric(ICE_1(Q, k,T)[1]-Sobs)
     Q1<-as.numeric(getElementI(Qm, 1))
     #S_sample<-Sobs+Q0_hat*(1-exp(-1*t*Q1/(Q1+T*Q0_hat)))
     S_sample<-Sobs+Q0_hat*(1-(1-Q1/(Q1+T*Q0_hat))^t)
     return (S_sample);
 }
 #'@title to do the extrapolation_abundance on the basis of the abundance frequency count
-#'@description  in this current version, we use Chao1 as the estimator of f0_hat.
+#'@description  in this current version, we use ACE_1 as the estimator of f0_hat.
 #'          Note: this is almost identical to extrapolation_Inc except using Chao1
 #'@param f, incidence frequency count array, e.g. 
 #'     c(1,250, 2,25,.....). Each pair is for one abundance count 
@@ -161,7 +162,8 @@ extrapolation_Abu<-function(f, n, m,k=10)
 {
     Qm<-matrix(f, nrow=length(f)/2, ncol=2, byrow=T)
     Sobs<-sum(Qm[,2]);
-    Q0_hat<-as.numeric(Chao1(f, n)[1]-Sobs)
+    #Q0_hat<-as.numeric(Chao1(f, n)[1]-Sobs)
+    Q0_hat<-as.numeric(ACE_1(f, k)[1]-Sobs)
     Q1<-as.numeric(getElementI(Qm, 1))
     #S_sample<-Sobs+Q0_hat*(1-exp(-1*t*Q1/(Q1+T*Q0_hat)))
     S_sample<-Sobs+Q0_hat*(1-(1-Q1/(Q1+n*Q0_hat))^m)
