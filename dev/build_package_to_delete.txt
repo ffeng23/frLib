@@ -33,7 +33,21 @@ install.packages("usethis")
     setwd( "/home/feng/Feng/hg/frLib")
     devtools::setup(path=".")				 
 
+##--------------------updated on 11/3/2020
+#####added to do c code for R (see the original notes in rcPkg/READ_and_Delete_ME.txt for details.
 
+# It seems that devtools::document() needs to load the dynamic library dll of c code. 
+#	this means we need to manually compile the dll
+	#open the COMMAND LINE CONSOLE and then go to the /src folder
+	E:
+	cd ~/Feng/hg/frLib/src
+	#for windows 
+	R CMD SHLIB cDemo.c -o frLib.dll
+	#for linux
+	R CMD SHLIB cDemo.c -o frLib.so 
+   #one import thing is that we need to have the name of dll matched with the one in the R wrapper code.
+   
+#
 #call roxygen2 to process the helper pages from the roxygen comments
 #setwd("/home/feng/Feng/hg/frLib")
 #setwd("E:/feng/LAB/hg/frLib")

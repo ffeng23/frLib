@@ -13,6 +13,7 @@
 #'@param Qm, matrix with frequency and count as the columns
 #'@param T, is the total number of sampling unit/sample size. 
 #'@param t, is the subsampling size. t>0 and t<T
+#'@export
 rarefection_Inc_each<-function(Qm, T, t)
 {
         #build matrix
@@ -22,14 +23,18 @@ rarefection_Inc_each<-function(Qm, T, t)
         
         #start computing.
         out<-rep(0, length(Y))
+        #cat("T:", T, "; t:",t,"\n")
         for(i in 1:length(Y))
         {
+        #cat("\ti:", i, "\n")
             if((T-Y[i])<t){
                 next;}
             n<-(T-Y[i])-numerator
             d<-T-denominator
+            #cat("\tn:", n, "; d:", d, "\n")
             out[i]<-exp(sum(log(n/d)))
         }
+        #cat("out:",out,"\n")
         return(sum(Qm[,2])-sum(out*Qm[,2]))
 }
 #====================

@@ -25,3 +25,9 @@
 #' 		Please refer to the vignettes to see details.
 #' @references Feng, et al 2019 \url{https://doi.org/10.1101/483800}		
 "_PACKAGE"
+
+
+.onUnload <- function (libpath) {
+	cat("calling to unload package lib...........\n")
+  library.dynam.unload("frLib", libpath)
+}
