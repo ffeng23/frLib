@@ -17,7 +17,7 @@
 #'  \item{baseMean}{mean of the base across samples.}
 #'  \item{log2FoldChange}{between groups}
 #'  \item{lfcSE}{standard error}
-#'  \item{stat}{negative binomial stat}
+#'  \item{stat}{negative binomial statq}
 #'	\item{pvalue}{nominal p value}
 #'	\item{padj}{FDR adjusted}
 #' }
