@@ -7,7 +7,9 @@
 projectPath<-"/home/feng/Feng/hg/frLib"
 holderPath<-"/home/feng/Feng/hg"
 
+
 setwd( "/home/feng/Feng/hg/frLib")
+
 
 #Optional, if we want to have the github project for synchronizing different 
 #version, 
